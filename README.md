@@ -1,6 +1,11 @@
-# EXPRESS/NodeJS backend API server
+# EXPRESS/NodeJS backend API server connected to Atlas mongo database
 
 Backend API built with nodeJS / Express.
+
+&nbsp;
+It is connected to Atlas cloud service giving access to your personnal mongoDB. You should subscribe to Atlas cloud services to connect your database.
+
+&nbsp;
 Developp any model/route files for convenience.
 
 ## API entries
