@@ -1,0 +1,19 @@
+{
+  "name": "express_backend",
+  "version": "1.0.0",
+  "description": "Express/Node backend api for any project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peanuts-83",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.4.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}
