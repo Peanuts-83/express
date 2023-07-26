@@ -43,9 +43,12 @@ router.get('/users/:id', async (req, res) => {
 })
 
 // Update user by ID
-router.put('/users/:id', async (req, res) => {
+router.put('/users/:id', upload.single('icon'), async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        const { firstName, lastName, birthday, email, password } = req.body
+        const iconBuffer = req.file ? req.file.buffer : null
+        const updatedData = { firstName, lastName, birthday, email, password, icon: iconBuffer}
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData, { new: true })
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' })
         }
