@@ -61,6 +61,9 @@ app.use(cors(corsOptions))
 ## File management
 
 ### Multer
+
+*ref. https://expressjs.com/en/resources/middleware/multer.html*
+
 #### ENCODE for storage in mongoDB
 
 Actually manages light weight files only under 16Mb with **multer** module.

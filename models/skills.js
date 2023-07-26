@@ -6,7 +6,8 @@ const skillSchema = new mongoose.Schema({
     type: {type: String, required: true},
     comment: { type: String, required: false },
     buffer: { type: Buffer, required: false },
-    image: {type: String, required: false}
+    image: {type: String, required: false},
+    icon: {type: String, required: false}
 })
 
 const Skill = mongoose.model('Skill', skillSchema)

@@ -8,7 +8,7 @@ const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage() })
 
 // Create new user
-router.post('/users', upload.single('icon'), async (req, res) => {
+router.post('/users', upload.single('buffer'), async (req, res) => {
     try {
         const { firstName, lastName, birthday, email, password } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
@@ -48,12 +48,12 @@ router.get('/users/:id', async (req, res) => {
 })
 
 // Update user by ID
-router.put('/users/:id', upload.single('icon'), async (req, res) => {
+router.put('/users/:id', upload.single('buffer'), async (req, res) => {
     try {
         const { firstName, lastName, birthday, email, password } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
         const updatedData = { firstName, lastName, birthday, email, password, buffer: iconBuffer }
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData, { new: true })
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData)
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' })
         }

@@ -7,13 +7,17 @@ const { convertImageBufferToBase64 } = require('../utils/utils')
 const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage() })
 
+// specPath required for skills : "hard" | "soft"
+
 // Create new skill
-router.post('/skills/:specPath', upload.single('image'), async (req, res) => {
+router.post('/skills/:specPath', upload.single('buffer'), async (req, res) => {
     try {
-        console.log('starting create skill')
-        const { title, subtitle, comment } = req.body
+        const { title, subtitle, comment, type, icon } = req.body
+        if (!req.params.specPath || req.params.specPath!==type) {
+            return res.status(401).json({ message: 'Unauthorised - Type (specPath) not defined or not corresponding to request ID' })
+        }
         const imageBuffer = req.file ? req.file.buffer : null
-        const newSkill = new Skill({ title, subtitle, comment, buffer: imageBuffer })
+        const newSkill = new Skill({ title, subtitle, comment, type, icon, buffer: imageBuffer })
         const savedSkill = await newSkill.save()
         res.status(201).json(savedSkill)
     } catch (err) {
@@ -22,10 +26,12 @@ router.post('/skills/:specPath', upload.single('image'), async (req, res) => {
 })
 
 // Get all skills
-router.get('/skills/', async (req, res) => {
+router.get('/skills/:specPath', async (req, res) => {
     try {
-        console.log('Starting get all skills')
-        const allSkills = await Skill.find()
+        const allSkills = (await Skill.find()).filter(skill => skill.type===req.params.specPath)
+        if (allSkills===null || allSkills===undefined || allSkills.length===0) {
+            return res.status(204).json({message: 'No data found'})
+        }
         // decode image to <base64>String
         allSkills.map(skill => skill.image = convertImageBufferToBase64(skill.buffer))
         res.json(allSkills)
@@ -38,6 +44,9 @@ router.get('/skills/', async (req, res) => {
 router.get('/skills/:specPath/:id', async (req, res) => {
     try {
         const skill = await Skill.findById(req.params.id)
+        if (!req.params.specPath || req.params.specPath!==skill.type) {
+            return res.status(401).json({ message: 'Unauthorised - Type (specPath) not defined or not corresponding to request ID' })
+        }
         if (!skill) {
             return res.status(404).json({ message: 'Skill not found!', })
         }
@@ -49,12 +58,15 @@ router.get('/skills/:specPath/:id', async (req, res) => {
 })
 
 // Update skill by ID
-router.put('/skills/:specPath/:id', upload.single('image'), async (req, res) => {
+router.put('/skills/:specPath/:id', upload.single('buffer'), async (req, res) => {
     try {
-        const { title, subtitle, comment } = req.body
+        const { title, subtitle, comment, type, icon } = req.body
+        if (!req.params.specPath || req.params.specPath!==type) {
+            return res.status(401).json({ message: 'Unauthorised - Type (specPath) not defined or not corresponding to request ID' })
+        }
         const imageBuffer = req.file ? req.file.buffer : null
-        const updatedData = { title, subtitle, comment, buffer: imageBuffer }
-        const updatedSkill = await Skill.findByIdAndUpdate(req.params.id, updatedData, { new: true })
+        const updatedData = { title, subtitle, comment, type, icon, buffer: imageBuffer }
+        const updatedSkill = await Skill.findByIdAndUpdate(req.params.id, updatedData)
         if (!updatedSkill) {
             return res.status(404).json({ message: 'Skill not found' })
         }
