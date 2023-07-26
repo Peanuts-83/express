@@ -9,6 +9,7 @@ const upload = multer({storage: multer.memoryStorage()})
 // Create new skill
 router.post('/skills/:specPath', upload.single('image'), async (req, res) => {
     try {
+        console.log('starting create skill')
         const { title, subtitle, comment } = req.body
         const imageBuffer = req.file ? req.file.buffer : null
         const newSkill = new Skill({title, subtitle, comment, image: imageBuffer})
@@ -43,9 +44,12 @@ router.get('/skills/:specPath/:id', async (req, res) => {
 })
 
 // Update skill by ID
-router.put('/skills/:specPath/:id', async (req, res) => {
+router.put('/skills/:specPath/:id', upload.single('image'), async (req, res) => {
     try {
-        const updatedSkill = await Skill.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        const { title, subtitle, comment } = req.body
+        const imageBuffer = req.file ? req.file.buffer : null
+        const updatedData = { title, subtitle, comment, image: imageBuffer}
+        const updatedSkill = await Skill.findByIdAndUpdate(req.params.id, updatedData, { new: true })
         if (!updatedSkill) {
             return res.status(404).json({ message: 'Skill not found' })
         }

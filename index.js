@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const userRoutes = require('./routes/user.routes')
+const skillRoutes = require('./routes/skill.routes')
 require('dotenv').config()
 
 const app = express()
@@ -10,8 +11,9 @@ const PORT = process.env.PORT || 3000
 // Parse incoming JSON data
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-// Use routes defined for Users
+// Use routes
 app.use('/api', userRoutes)
+app.use('/api', skillRoutes)
 
 // Replace mongoDB_URI with my ATLAS cloud URI
 const MONGODB_URI = process.env.MONGODB_URI
