@@ -33,6 +33,29 @@ npm install
 npm start
 ```
 
+## Test it!
+
+You can use **Postman** (VsCode has a very nice *Postman plugin*) to test your CRUD routes.
+
+&nbsp;
+In order to upload image files (png format only is tested at the beginning of this project) for "icon" or "image" keys (check User & Skill models), you will have to set your Header option **Content-Type: multipart/form-data**. The data you will pass through Body must be with **form-data** option (key/value pairs), so that you can select **file** for "icon" or "image" keys and get the right file.
+
+## CORS
+*ref. https://docs.digitalocean.com/glossary/allow-origin/#:~:text=Access%2DControl%2DAllow%2DOrigin%20is%20a%20header%20request%20that,of%20a%20page%20is%20accessible*
+
+&nbsp;
+Access-Control-Allow-Origin header specifies from where this API server is accessible.
+**cors** module is used. You can define your frontEnd application's URL in **index.js** setup.
+More securised access shall be defined later for production purpose.
+
+```javascript
+const allowedOrigin = 'http://localhost:4200'
+const corsOptions = { origin: allowedOrigin }
+
+// CORS definition
+app.use(cors(corsOptions))
+```
+
 
 
 ## File management
@@ -89,15 +112,16 @@ app.listen(3000, () => {
 #### ENCODE for UI
 
 
-Getting the file back to any UI, it is necessary to convert the buffured png file to a usable format. One common way is to encode it with the **toString('base64')** method.
+Getting the file back to any UI, it is necessary to convert the buffured png file to a usable format.
+**This operation must be implemented on backend application, because it's a server side operation using NodeJS BUFFER module**. One common way is to encode it with the **toString('base64')** method.
 
 ```javascript
-// JS - Convert PNG image buffer to Base64 encoded string
+// JS - SERVER SIDE - Convert PNG image buffer to Base64 encoded string
 const convertImageBufferToBase64 = (buffer) => {
   return buffer.toString('base64');
 };
 
-// HTML - Assuming you have fetched the user data from the server and have the Base64 encoded image available
+// HTML - FRONT SIDE - Assuming you have fetched the user data from the server and have the Base64 encoded image available
 <img src="data:image/png;base64, {{ base64EncodedImage }}" alt="User Avatar" />
 ```
 

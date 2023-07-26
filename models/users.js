@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     birthday: { type: String, required: false },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    icon: { type: Buffer, required: false }
+    buffer: { type: Buffer, required: false },
+    icon: {type: String, required: false}
 })
 
 const User = mongoose.model('User', userSchema)

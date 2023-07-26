@@ -1,17 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/users')
+const { convertImageBufferToBase64 } = require('../utils/utils')
 
 // image file management
 const multer = require('multer')
-const upload = multer({storage: multer.memoryStorage()})
+const upload = multer({ storage: multer.memoryStorage() })
 
 // Create new user
 router.post('/users', upload.single('icon'), async (req, res) => {
     try {
         const { firstName, lastName, birthday, email, password } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
-        const newUser = new User({firstName, lastName, birthday, email, password, icon: iconBuffer})
+        const newUser = new User({ firstName, lastName, birthday, email, password, buffer: iconBuffer })
         const savedUser = await newUser.save()
         res.status(201).json(savedUser)
     } catch (err) {
@@ -22,7 +23,10 @@ router.post('/users', upload.single('icon'), async (req, res) => {
 // Get all users
 router.get('/users', async (req, res) => {
     try {
+        console.log('Starting get all users')
         const allUsers = await User.find()
+        // decode image to <base64>String
+        allUsers.map(user => user.icon = convertImageBufferToBase64(user.buffer))
         res.json(allUsers)
     } catch (err) {
         res.status(500).json({ message: 'No user found', err })
@@ -36,7 +40,8 @@ router.get('/users/:id', async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found!', })
         }
-        res.json(user)
+        const icon = convertImageBufferToBase64(user.buffer)
+        res.json({ ...user, icon })
     } catch (err) {
         res.status(500).json({ message: `Failed to search for user ${req.params.id}` })
     }
@@ -47,7 +52,7 @@ router.put('/users/:id', upload.single('icon'), async (req, res) => {
     try {
         const { firstName, lastName, birthday, email, password } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
-        const updatedData = { firstName, lastName, birthday, email, password, icon: iconBuffer}
+        const updatedData = { firstName, lastName, birthday, email, password, buffer: iconBuffer }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData, { new: true })
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' })

@@ -3,15 +3,20 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const userRoutes = require('./routes/user.routes')
 const skillRoutes = require('./routes/skill.routes')
+const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
 const PORT = process.env.PORT || 3000
+const allowedOrigin = 'http://localhost:4200'
+const corsOptions = { origin: allowedOrigin }
 
+// CORS definition
+app.use(cors(corsOptions))
 // Parse incoming JSON data
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
-// Use routes
+app.use(bodyParser.urlencoded({ extended: true }))
+// Use routes - update while creating new routes
 app.use('/api', userRoutes)
 app.use('/api', skillRoutes)
 
@@ -36,15 +41,8 @@ db.once('open', () => {
     console.log('Connected to mongoDB successfully!')
 })
 
-// Define a simple test route
-app.get('./', (req,res) => {
-    res.send('Backend server is running')
-})
-
-// CRUD operation API here!
-
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`)
+    console.log(`Server is running on http://localhost:${PORT} \nCORS allowed only for ${allowedOrigin}`)
 })
