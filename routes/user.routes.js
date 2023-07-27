@@ -7,8 +7,11 @@ const { convertImageBufferToBase64 } = require('../utils/utils')
 const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage() })
 
-// Create new user
-router.post('/users', upload.single('buffer'), async (req, res) => {
+// profile managment - Admin restricted access
+const adminGuardMiddleware = require('../guards/admin.guard')
+
+// Create new user - Admin access only!
+router.post('/users', adminGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
         const { firstName, lastName, birthday, email, password, profile } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
@@ -47,8 +50,8 @@ router.get('/users/:id', async (req, res) => {
     }
 })
 
-// Update user by ID
-router.put('/users/:id', upload.single('buffer'), async (req, res) => {
+// Update user by ID - Admin access only!
+router.put('/users/:id', adminGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
         const { firstName, lastName, birthday, email, password, profile, buffer } = req.body
         const iconBuffer = req.file ? req.file.buffer :
@@ -64,8 +67,8 @@ router.put('/users/:id', upload.single('buffer'), async (req, res) => {
     }
 })
 
-// Delete user by ID
-router.delete('/users/:id', async (req, res) => {
+// Delete user by ID - Admin access only!
+router.delete('/users/:id', adminGuardMiddleware, async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndRemove(req.params.id)
         if (!deletedUser) {
