@@ -1,11 +1,11 @@
 # EXPRESS/NodeJS backend API server connected to Atlas mongo database
 
-Backend API built with nodeJS / Express.
+Backend API built with nodeJS / Express.&nbsp;
 
-&nbsp;
-It is connected to Atlas cloud service giving access to your personnal mongoDB. You should subscribe to Atlas cloud services to connect your database.
 
-&nbsp;
+It is connected to Atlas cloud service giving access to your personnal mongoDB. You should subscribe to Atlas cloud services to connect your database.&nbsp;
+
+
 Developp any model/route files for convenience.
 
 ## API entries
@@ -14,9 +14,9 @@ Developp any model/route files for convenience.
 * /skills/<"hard"|"soft">
 
 ## Use it!
-A **.env** file must be created at root of the project, containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. This file's variables are accessed with **dotenv** module.
+A **.env** file must be created at root of the project, containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. This file's variables are accessed with **dotenv** module.&nbsp;
 
-&nbsp;
+
 Atlas URI cluster can be found in the deployment interface at this path : *Database > Connect > Connect to your application*
 
 ```env
@@ -35,15 +35,15 @@ npm start
 
 ## Test it!
 
-You can use **Postman** (VsCode has a very nice *Postman plugin*) to test your CRUD routes.
+You can use **Postman** (VsCode has a very nice *Postman plugin*) to test your CRUD routes.&nbsp;
 
-&nbsp;
+
 In order to upload image files (png format only is tested at the beginning of this project) for "icon" or "image" keys (check User & Skill models), you will have to set your Header option **Content-Type: multipart/form-data**. The data you will pass through Body must be with **form-data** option (key/value pairs), so that you can select **file** for "icon" or "image" keys and get the right file.
 
 ## CORS
-*ref. https://docs.digitalocean.com/glossary/allow-origin/#:~:text=Access%2DControl%2DAllow%2DOrigin%20is%20a%20header%20request%20that,of%20a%20page%20is%20accessible*
+*ref. https://docs.digitalocean.com/glossary/allow-origin/#:~:text=Access%2DControl%2DAllow%2DOrigin%20is%20a%20header%20request%20that,of%20a%20page%20is%20accessible*&nbsp;
 
-&nbsp;
+
 Access-Control-Allow-Origin header specifies from where this API server is accessible.
 **cors** module is used. You can define your frontEnd application's URL in **index.js** setup.
 More securised access shall be defined later for production purpose.
@@ -66,10 +66,13 @@ app.use(cors(corsOptions))
 
 #### ENCODE for storage in mongoDB
 
-Actually manages light weight files only under 16Mb with **multer** module.
-Files are temporary stored in memoryStorage before being stored as bin data in mongoDB.
+Actually manages file storing. In the case of light weight files only under 16Mb (mongoDB's limit for document) the use of **multer** module is not strictly required and files can be stored as is under binary format.&nbsp;
 
-&nbsp;
+
+But if files are bigger than 16Mb, MongoDB's GridFS functionality can be combined with multer to store these larger files in a separate collection and still associate them with te relevant document in the current collection.
+Files are temporary stored in memoryStorage (*{ storage: multer.memoryStorage() }*) before being stored as bin data in mongoDB.&nbsp;
+
+
 An other option could be temp storing files on the disk with the *dest* option in multer instead of *storage* option, but it would require therefor to use **fs** module to manage disk space on server and gain access to the temp files!
 
 ```javascript

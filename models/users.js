@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     buffer: { type: Buffer, required: false },
+    profile: {type: String, required: true, default: 'guest', enum: ['guest','admin']},
     icon: {type: String, required: false}
 })
 

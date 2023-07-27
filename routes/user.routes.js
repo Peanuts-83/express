@@ -10,9 +10,9 @@ const upload = multer({ storage: multer.memoryStorage() })
 // Create new user
 router.post('/users', upload.single('buffer'), async (req, res) => {
     try {
-        const { firstName, lastName, birthday, email, password } = req.body
+        const { firstName, lastName, birthday, email, password, profile } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
-        const newUser = new User({ firstName, lastName, birthday, email, password, buffer: iconBuffer })
+        const newUser = new User({ firstName, lastName, birthday, email, password, profile, buffer: iconBuffer })
         const savedUser = await newUser.save()
         res.status(201).json(savedUser)
     } catch (err) {
@@ -50,9 +50,10 @@ router.get('/users/:id', async (req, res) => {
 // Update user by ID
 router.put('/users/:id', upload.single('buffer'), async (req, res) => {
     try {
-        const { firstName, lastName, birthday, email, password } = req.body
-        const iconBuffer = req.file ? req.file.buffer : null
-        const updatedData = { firstName, lastName, birthday, email, password, buffer: iconBuffer }
+        const { firstName, lastName, birthday, email, password, profile, buffer } = req.body
+        const iconBuffer = req.file ? req.file.buffer :
+            buffer ? buffer : null
+        const updatedData = { firstName, lastName, birthday, email, password, profile, buffer: iconBuffer }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData)
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' })

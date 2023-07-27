@@ -60,11 +60,12 @@ router.get('/skills/:specPath/:id', async (req, res) => {
 // Update skill by ID
 router.put('/skills/:specPath/:id', upload.single('buffer'), async (req, res) => {
     try {
-        const { title, subtitle, comment, type, icon } = req.body
+        const { title, subtitle, comment, type, icon, buffer } = req.body
         if (!req.params.specPath || req.params.specPath!==type) {
             return res.status(401).json({ message: 'Unauthorised - Type (specPath) not defined or not corresponding to request ID' })
         }
-        const imageBuffer = req.file ? req.file.buffer : null
+        const imageBuffer = req.file ? req.file.buffer :
+            buffer ? buffer : null
         const updatedData = { title, subtitle, comment, type, icon, buffer: imageBuffer }
         const updatedSkill = await Skill.findByIdAndUpdate(req.params.id, updatedData)
         if (!updatedSkill) {
