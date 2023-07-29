@@ -13,9 +13,9 @@ const adminGuardMiddleware = require('../guards/admin.guard')
 // Create new user - Admin access only!
 router.post('/users', adminGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
-        const { firstName, lastName, birthday, email, password, profile } = req.body
+        const { username, birthday, email, password, profile } = req.body
         const iconBuffer = req.file ? req.file.buffer : null
-        const newUser = new User({ firstName, lastName, birthday, email, password, profile, buffer: iconBuffer })
+        const newUser = new User({ username, birthday, email, password, profile, buffer: iconBuffer })
         const savedUser = await newUser.save()
         res.status(201).json(savedUser)
     } catch (err) {
@@ -53,10 +53,10 @@ router.get('/users/:id', async (req, res) => {
 // Update user by ID - Admin access only!
 router.put('/users/:id', adminGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
-        const { firstName, lastName, birthday, email, password, profile, buffer } = req.body
+        const { username, birthday, email, password, profile, buffer } = req.body
         const iconBuffer = req.file ? req.file.buffer :
             buffer ? buffer : null
-        const updatedData = { firstName, lastName, birthday, email, password, profile, buffer: iconBuffer }
+        const updatedData = { username, birthday, email, password, profile, buffer: iconBuffer }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData)
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' })
