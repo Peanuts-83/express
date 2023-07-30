@@ -15,7 +15,7 @@ Developp any model/route files for convenience.
 
 ## Use it!
 
-Make at root **.env** file containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. Other kind of env.variables can be referenced, such as **JWT_SECRET_KEY** or what else you need. This file's variables are accessed with **dotenv** module.
+Make at root **.env** file containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. Other kind of env.variables can be referenced, such as **JWT_SECRET_KEY** or what else you need. This file's variables are accessed with **dotenv** module. This file is added to the .gitignore file.
 
 ```env
 # Atlas URI cluster can be found in the deployment interface at this path : *Database > Connect > Connect to your application
@@ -67,10 +67,16 @@ const corsOptions = { origin: allowedOrigin }
 app.use(cors(corsOptions))
 ```
 
-## Authentification
+## Authentification - HTTP/HTTPS settings
 
-If you need securised access for user identification, use HTTPS instead of HTTP protocol. This way the password you send from frontend side is encrypted.
+HTTPS protocol is set by default. Check the end of *index.js* file for changing to HTTP.
+If you need securised access for user identification, use HTTPS instead of HTTP protocol. This way the **HEADERS** containing username/password you send from frontend side are encrypted.&nbsp;
+
 For security reasons, ports < 1024 require privileged access. For this reason, I set my HTTPS PORT to 4443, so that nodeJS can access my secret files.
+
+## Response formatter
+
+In order to format all the responses from the API routes, use the **responseFormatter middleware**. You will be able to format any response at your convenience, adding some keys/values to fit the result your frontend app expects.
 
 ## File management
 

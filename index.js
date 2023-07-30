@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const resFormatter = require('./middleware/responseFormatter')
 require('dotenv').config()
 
 // Static variables setting
@@ -22,6 +23,8 @@ app.use(cors(corsOptions))
 // Parse incoming JSON data
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+// Format any response
+app.use(resFormatter)
 
 /**
  * Routes definition
@@ -53,16 +56,21 @@ db.once('open', () => {
     console.log('Connected to mongoDB successfully!')
 })
 
-// Start server
-app.listen(PORT_HTTP, () => {
-    console.log(`Server is running on https://localhost:${PORT_HTTP} \nCORS allowed only for ${allowedOrigin}`)
-})
+
+///////////////////////////////////////////////
+//      HTTP for non-securised access        //
+///////////////////////////////////////////////
+// app.listen(PORT_HTTP, () => {
+//     console.log(`Server is running on https://localhost:${PORT_HTTP} \nCORS allowed only for ${allowedOrigin}`)
+// })
+///////////////////////////////////////////////
+//  END FOR HTTP - comment if not required   //
+///////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////
 //        HTTPS for securised access         //
 ///////////////////////////////////////////////
-
 const https = require('https')
 const fs = require('fs')
 const HTTPS_PRIVATE_KEY = 'secrets/key.pem'
@@ -78,7 +86,6 @@ const httpsOptions = {
 https.createServer(httpsOptions, app).listen(PORT_HTTPS, () => {
     console.log(`Server started on port ${PORT_HTTPS}`)
 })
-
 ///////////////////////////////////////////////
 //  END FOR HTTPS - comment if not required  //
 ///////////////////////////////////////////////
