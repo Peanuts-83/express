@@ -1,34 +1,46 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const userRoutes = require('./routes/user.routes')
-const skillRoutes = require('./routes/skill.routes')
 const cors = require('cors')
 require('dotenv').config()
 
-const app = express()
-const PORT = process.env.PORT || 3000
+// Static variables setting
+const PORT_HTTP = process.env.PORT_HTTP || 3000
+const PORT_HTTPS = process.env.PORT_HTTPS || 443
 const allowedOrigin = 'http://localhost:4200'
-const corsOptions = { origin: allowedOrigin }
+const corsOptions = {
+    origin: allowedOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}
+const MONGODB_URI = process.env.MONGODB_URI
+
+const app = express()
 
 // CORS definition
 app.use(cors(corsOptions))
 // Parse incoming JSON data
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-// Use routes - update while creating new routes
+
+/**
+ * Routes definition
+ * ! Done AFTER cors & bodyParser config !
+ * ! update while creating new routes !
+*/
+const authRoutes = require('./routes/auth.routes')
+const userRoutes = require('./routes/user.routes')
+const skillRoutes = require('./routes/skill.routes')
+
+app.use('/api', authRoutes)
 app.use('/api', userRoutes)
 app.use('/api', skillRoutes)
-
-// Replace mongoDB_URI with my ATLAS cloud URI
-const MONGODB_URI = process.env.MONGODB_URI
 
 // Connect to mongoDB ATLAS
 mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-
 const db = mongoose.connection
 
 // Manage connection error
@@ -41,8 +53,32 @@ db.once('open', () => {
     console.log('Connected to mongoDB successfully!')
 })
 
-
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT} \nCORS allowed only for ${allowedOrigin}`)
+app.listen(PORT_HTTP, () => {
+    console.log(`Server is running on https://localhost:${PORT_HTTP} \nCORS allowed only for ${allowedOrigin}`)
 })
+
+
+///////////////////////////////////////////////
+//        HTTPS for securised access         //
+///////////////////////////////////////////////
+
+const https = require('https')
+const fs = require('fs')
+const HTTPS_PRIVATE_KEY = 'secrets/key.pem'
+const HTTPS_CERTIFICATE = 'secrets/cert.pem'
+
+// HTTPS options
+const httpsOptions = {
+    key: fs.readFileSync(HTTPS_PRIVATE_KEY), // /path/to/private-key.pem
+    cert: fs.readFileSync(HTTPS_CERTIFICATE) // /path/to/certificate.pem
+}
+
+// Create HTTPS server
+https.createServer(httpsOptions, app).listen(PORT_HTTPS, () => {
+    console.log(`Server started on port ${PORT_HTTPS}`)
+})
+
+///////////////////////////////////////////////
+//  END FOR HTTPS - comment if not required  //
+///////////////////////////////////////////////

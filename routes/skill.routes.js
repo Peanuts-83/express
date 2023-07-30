@@ -8,12 +8,12 @@ const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage() })
 
 // profile managment - Admin restricted access
-const adminGuardMiddleware = require('../guards/admin.guard')
+const authGuardMiddleware = require('../guards/auth.guard')
 
 // specPath required for skills : "hard" | "soft"
 
 // Create new skill - Admin access only!
-router.post('/skills/:specPath', adminGuardMiddleware, upload.single('buffer'), async (req, res) => {
+router.post('/skills/:specPath', authGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
         const { title, subtitle, comment, type, icon } = req.body
         if (!req.params.specPath || req.params.specPath!==type) {
@@ -61,7 +61,7 @@ router.get('/skills/:specPath/:id', async (req, res) => {
 })
 
 // Update skill by ID - Admin access only!
-router.put('/skills/:specPath/:id', adminGuardMiddleware, upload.single('buffer'), async (req, res) => {
+router.put('/skills/:specPath/:id', authGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
         const { title, subtitle, comment, type, icon, buffer } = req.body
         if (!req.params.specPath || req.params.specPath!==type) {
@@ -81,7 +81,7 @@ router.put('/skills/:specPath/:id', adminGuardMiddleware, upload.single('buffer'
 })
 
 // Delete skill by ID - Admin access only!
-router.delete('/skills/:id', adminGuardMiddleware, async (req, res) => {
+router.delete('/skills/:id', authGuardMiddleware, async (req, res) => {
     try {
         const deletedSkill = await Skill.findByIdAndRemove(req.params.id)
         if (!deletedSkill) {

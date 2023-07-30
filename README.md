@@ -14,15 +14,26 @@ Developp any model/route files for convenience.
 * /skills/<"hard"|"soft">
 
 ## Use it!
-A **.env** file must be created at root of the project, containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. This file's variables are accessed with **dotenv** module.&nbsp;
 
-
-Atlas URI cluster can be found in the deployment interface at this path : *Database > Connect > Connect to your application*
+Make at root **.env** file containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. Other kind of env.variables can be referenced, such as **JWT_SECRET_KEY** or what else you need. This file's variables are accessed with **dotenv** module.
 
 ```env
+# Atlas URI cluster can be found in the deployment interface at this path : *Database > Connect > Connect to your application
 # URI = user : password @ cluster/database ? options
 MONGODB_URI=mongodb+srv://<your_user>:<your_password>@<your_atlas_cluster>/<your_database>?retryWrites=true&w=majority
-PORT=<your_port_number(usually 3000 or 3001)>
+# Use PORT for Http access on backend app (usually 3000)
+PORT_HTTP=3001
+# Use PORT for Https access on backend app (usually 443)
+PORT_HTTPS=4443
+# JWT secret-key
+JWT_SECRET_KEY=<any_string_you_want>
+```
+
+Make a "secrets" folder at root. This folder is added to the .gitignore file to keep contained files secure.
+It should contain:
+* **cert.pem** & **key.pem** for HTTPS certificates. It can be obtained by variious ways. For development purpose, I am using self-signed certificates (not recommended for production) you can produce this way:
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
 ```
 
 Install required dependencies with npm, yarn or any of your package manager.
@@ -56,7 +67,10 @@ const corsOptions = { origin: allowedOrigin }
 app.use(cors(corsOptions))
 ```
 
+## Authentification
 
+If you need securised access for user identification, use HTTPS instead of HTTP protocol. This way the password you send from frontend side is encrypted.
+For security reasons, ports < 1024 require privileged access. For this reason, I set my HTTPS PORT to 4443, so that nodeJS can access my secret files.
 
 ## File management
 
