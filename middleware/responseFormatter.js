@@ -5,6 +5,7 @@
  * @param {*} next
  */
 const responseFormatter = (req, res, next) => {
+    console.log('responseFormatter start')
     const originalJson = res.json
     res.json = body => {
         const formattedBody = {

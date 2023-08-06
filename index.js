@@ -12,8 +12,12 @@ const allowedOrigin = 'http://localhost:4200'
 const corsOptions = {
     origin: allowedOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    // credentials: true,
+    // allowedHeaders: ['Content-Type', 'Authorization']
 }
+// Allow self signed certificate - for dev only - remove for production!
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
 const MONGODB_URI = process.env.MONGODB_URI
 
 const app = express()
@@ -84,7 +88,7 @@ const httpsOptions = {
 
 // Create HTTPS server
 https.createServer(httpsOptions, app).listen(PORT_HTTPS, () => {
-    console.log(`Server started on port ${PORT_HTTPS}`)
+    console.log(`Server is running on https://localhost:${PORT_HTTPS} \nCORS allowed only for ${allowedOrigin}`)
 })
 ///////////////////////////////////////////////
 //  END FOR HTTPS - comment if not required  //

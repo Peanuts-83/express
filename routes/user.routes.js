@@ -9,7 +9,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 // profile managment - Admin restricted access
 const authGuardMiddleware = require('../guards/auth.guard')
-
+console.log('access user routes')
 // Create new user - Admin access only!
 router.post('/users', authGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {

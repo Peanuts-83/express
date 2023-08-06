@@ -14,6 +14,7 @@ Developp any model/route files for convenience.
 * /skills/<"hard"|"soft">
 
 ## Use it!
+### .env file
 
 Make at root **.env** file containing vital informations about your Atlas cloud mongoDB access and the dedicated port to be used locally on your machine, or later on the server. Other kind of env.variables can be referenced, such as **JWT_SECRET_KEY** or what else you need. This file's variables are accessed with **dotenv** module. This file is added to the .gitignore file.
 
@@ -29,13 +30,26 @@ PORT_HTTPS=4443
 JWT_SECRET_KEY=<any_string_you_want>
 ```
 
+### self-signed certificate
+
 Make a "secrets" folder at root. This folder is added to the .gitignore file to keep contained files secure.
 It should contain:
-* **cert.pem** & **key.pem** for HTTPS certificates. It can be obtained by variious ways. For development purpose, I am using self-signed certificates (not recommended for production) you can produce this way:
+
+* **cert.pem** & **key.pem** for HTTPS certificates. It can be obtained by various ways. For development purpose, I am using self-signed certificates (not recommended for production) you can produce this way:
 ```bash
 openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
 ```
 
+You can add this certificate to your client navigator (Chrome; Firefox,...) by importing it to Params > Security > Certificates. The certificate (*certificate.p12*) to import is a mixed version of your cert.pem and key.pem files that can be done this way:
+
+```bash
+cat cert.pem key.pem > combined.pem
+openssl pkcs12 -export -out certificate.p12 -in combined.pem
+```
+
+Restart your navigator after adding ceertificate.
+
+### Install depencies & start frontend application
 Install required dependencies with npm, yarn or any of your package manager.
 Use the **start** script from *package.json*
 
