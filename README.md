@@ -32,22 +32,26 @@ JWT_SECRET_KEY=<any_string_you_want>
 
 ### self-signed certificate
 
-Make a "secrets" folder at root. This folder is added to the .gitignore file to keep contained files secure.
+/* this part is not actually used - to be developped&nbsp;
+
+Make a "secrets" folder at root to store secret ssl, or store them into /etc/ssl. "secrets" is added to the .gitignore file to keep contained files secure.
 It should contain:
 
-* **cert.pem** & **key.pem** for HTTPS certificates. It can be obtained by various ways. For development purpose, I am using self-signed certificates (not recommended for production) you can produce this way:
+* **cert.pem** & **key.pem** for HTTPS certificates. It can be obtained by various ways. For development purpose, I am using self-signed certificates (not recommended for production) you can produce this way (I do store cert & key in /etc/ssh/ in this use case):
 ```bash
-openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/localhost-selfsigned.key -out /etc/ssl/certs/localhost-selfsigned.crt
 ```
 
 You can add this certificate to your client navigator (Chrome; Firefox,...) by importing it to Params > Security > Certificates. The certificate (*certificate.p12*) to import is a mixed version of your cert.pem and key.pem files that can be done this way:
 
 ```bash
-cat cert.pem key.pem > combined.pem
+cat localhost-selfsigned.crt localhost-selfsigned.key > combined.pem
 openssl pkcs12 -export -out certificate.p12 -in combined.pem
 ```
 
-Restart your navigator after adding ceertificate.
+Restart your navigator after adding ceertificate.&nbsp;
+
+/* end of undevelopped part
 
 ### Install depencies & start frontend application
 Install required dependencies with npm, yarn or any of your package manager.
