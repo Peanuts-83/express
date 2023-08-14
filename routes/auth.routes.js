@@ -18,6 +18,7 @@ router.post('/users/auth', async (req, res) => {
         const token = jwt.sign({ userId: validUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
         res.status(200).json({
             message: `Successfully connected as ${validUser?.profile}`,
+            id: validUser._id,
             token,
             email,
             profile,

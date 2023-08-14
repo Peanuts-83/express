@@ -69,8 +69,10 @@ router.put('/users/:id', authGuardMiddleware, upload.single('buffer'), async (re
 
 // Delete user by ID - Admin access only!
 router.delete('/users/:id', authGuardMiddleware, async (req, res) => {
+    console.log('DELETE User begin', req.params)
     try {
         const deletedUser = await User.findByIdAndRemove(req.params.id)
+        console.log('DELETE USER', deletedUser)
         if (!deletedUser) {
             return res.status(404).json({ message: 'User not found' })
         }
