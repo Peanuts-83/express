@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     birthday: { type: String, required: false },
     email: { type: String, required: true },
     buffer: { type: Buffer, required: false },
-    profile: {type: String, required: true, default: 'guest', enum: ['guest','admin']},
+    profile: {type: String, required: true, default: 'guest', enum: ['guest','admin','super_admin']},
     icon: {type: String, required: false}
 })
 
