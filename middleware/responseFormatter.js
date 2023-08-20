@@ -7,10 +7,10 @@
 const responseFormatter = (req, res, next) => {
     console.log('responseFormatter start')
     const originalJson = res.json
+    console.log(res)
     res.json = body => {
         const formattedBody = {
-            status: res.statusCode,
-            body: body
+            body
         }
         originalJson.call(res, formattedBody)
     }
