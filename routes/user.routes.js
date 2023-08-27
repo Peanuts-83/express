@@ -50,6 +50,20 @@ router.get('/users/:id', async (req, res) => {
     }
 })
 
+// Get single user by ID & test token validity
+router.get('/users/check/:id', authGuardMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        if (!user) {
+            return res.status(404).json({ message: 'User not found!', })
+        }
+        const icon = convertImageBufferToBase64(user.buffer)
+        res.json({ ...user, icon })
+    } catch (err) {
+        res.status(500).json({ message: `Failed to search for user ${req.params.id}` })
+    }
+})
+
 // Update user by ID - Admin access only!
 router.put('/users/:id', authGuardMiddleware, upload.single('buffer'), async (req, res) => {
     try {
